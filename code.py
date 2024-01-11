@@ -4,7 +4,7 @@ import board
 import time
 
 #simple blink
-T = 0.3
+T = 0.20
 piLed = digitalio.DigitalInOut(board.GP25)
 piLed.direction = digitalio.Direction.OUTPUT
 while True:
