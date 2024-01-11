@@ -1,0 +1,24 @@
+Current Pinouts:
+0	Row 0(Numpad)
+1	Row 1(Numpad)
+2	CLK  (MAX7219)
+3	MOSI (MAX7219)
+4	Row 2(Numpad)
+5	Row 3(Numpad)
+6	CS   (MAX7219)
+7	Col 0(Numpad)
+8	MISO (SD card)
+9	CS   (SD card)
+10	CLK  (SD card)
+11	MOSI (SD card)
+15	Neopixel
+26	Col 2(Numpad)
+27	Col 1(Numpad)
+28	Speaker (Plugged into transistor)
+
+GND	Speaker
+GND	MAX7219
+GND	Neopixel
+
++5V	Speaker
++3V	MAX7219

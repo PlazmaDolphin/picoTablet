@@ -1,0 +1,22 @@
+Objective: Make a "Main Menu" for the various programs I have written.
+
+On startup: Display startup animation, then prompt for a program selection.
+Programs will be chosen based on the button pressed on the keypad.
+
+1: Dodge game
+2: Character debugger
+3: Coin toss Rhythm game
+4: MP3 Player (not yet implemented)
+5: EPIC Player
+6: Clock (not yet implemented)
+7: Billboard (not yet implemented)
+8: "Timer" (sounds very much like a bomb) (partial code available)
+9: Credits (Literally just me)
+0: Settings (not yet implemented)
+
+*: Gives info for any above program
+#: Shutdown (Plays shutdown animation, then DIES)
+
+Requirements:
+1. Figure out a way to dispatch to programs without using hardware twice
+2. Have settings that transfer between programs
