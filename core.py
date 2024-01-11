@@ -41,55 +41,6 @@ def toseg(string): #converts string to binary 7seg array
         letters.append(fontA[i])
     return letters
 
-class segdisp:
-    def __init__(self, dpin, lpin, cpin):
-        d = digitalio.DigitalInOut(dpin)
-        d.direction = digitalio.Direction.OUTPUT
-        self.d = d #data
-        l = digitalio.DigitalInOut(lpin)
-        l.direction = digitalio.Direction.OUTPUT
-        self.l = l #latch
-        c = digitalio.DigitalInOut(cpin)
-        c.direction = digitalio.Direction.OUTPUT
-        self.c = c #clock
-        self.dig = 0
-        self.data = [0,0,0,0]
-    def setnum(self, num):
-        for i in range(4):
-            out = num // 10 ** (3-i)
-            out %= 10
-            self.data[i] = numfont[out]
-        if num < 0:
-            self.data[0] = 0x40 #adds negative ( - ) mark
-    def sethex(self, num):
-        for i in range(4):
-            out = num // 16 ** (3-i)
-            out %= 16
-            self.data[i] = numfont[out]
-        if num < 0:
-            self.data[0] = 0x40 #adds negative ( - ) mark
-    def settxt(self, txt, font=fontA):
-        for i in range(4):
-            self.data[i] = font[txt[i]]
-    def setout(self, out):
-        self.data = out
-    def display(self):
-        self.l.value = False
-        self.d.value = False
-        out = self.data[self.dig]
-        pos = 2 ** self.dig
-        for i in range(4):
-            self.c.value = False
-            self.d.value = (0b1000&(pos<<i)!=0b1000)
-            self.c.value = True
-        for i in range(8):
-            self.c.value = False
-            self.d.value = (0x80&(out<<i)==0x80)
-            self.c.value = True
-        self.l.value = True
-        self.dig += 1
-        self.dig %= 4
-
 class countdown:
     def __init__(self, t):
         self.start = time.monotonic_ns()
@@ -178,45 +129,6 @@ class numpad:
             self.rows[ir].value = False
         return out
 
-class dip:
-    def __init__(self, sr_d, sr_l, sr_c, pinin):
-        d = digitalio.DigitalInOut(sr_d)
-        d.direction = digitalio.Direction.OUTPUT
-        self.d = d #data
-        l = digitalio.DigitalInOut(sr_l)
-        l.direction = digitalio.Direction.OUTPUT
-        self.l = l #latch
-        c = digitalio.DigitalInOut(sr_c)
-        c.direction = digitalio.Direction.OUTPUT
-        self.c = c #clock
-        a = digitalio.DigitalInOut(pinin)
-        a.direction = digitalio.Direction.INPUT
-        a.pull = digitalio.Pull.DOWN
-        self.a = a #data in
-    def getdips(self):
-        dout = 0x0000
-        self.l.value = False
-        self.c.value = False
-        self.d.value = True #shift a bit into the registers
-        self.c.value = True #to test them individualy
-        #self.d.value = False
-        for i in range(8):
-            self.l.value = True
-            if self.a.value:
-                dout += 1 << i
-            self.l.value = False
-            self.c.value = False
-            self.c.value = True
-        dout *= 0x100
-        for i in range(8):
-            self.l.value = True
-            if self.a.value:
-                dout += 1 << i
-            self.l.value = False
-            self.c.value = False
-            self.c.value = True
-        return dout
-
 class button:
     def __init__(self, pin):
         btn = digitalio.DigitalInOut(pin)
@@ -233,36 +145,3 @@ class button:
             status += 1
         self.last = self.btn.value
         return status
-
-class flywheel: #move to core.py maybe?
-    def __init__(self, windup=1.5, winddown=3.0, slowdart=0.75):
-        self.windup = windup #constants (seconds)
-        self.winddown = winddown
-        self.slowdart = slowdart
-        self.powered = False
-        self.timeref = 0
-        self.windlvl = 0
-    def howcharged(self): #updates and returns windlvl
-        elapsed = time.monotonic() - self.timeref
-        self.timeref = time.monotonic()
-        winddif = elapsed / (self.windup if self.powered else -self.winddown)
-        self.windlvl += winddif
-        self.windlvl = int(self.windlvl) if abs(self.windlvl - 0.5) > 0.5 else self.windlvl
-        #set winddif to 0 or 1 if below 0 or above 1, respectively
-        return self.windlvl
-    def on(self):
-        self.howcharged()
-        self.powered = True
-    def off(self):
-        self.howcharged()
-        self.powered = False
-    def fire(self):
-        self.howcharged()
-        self.windlvl -= self.slowdart / self.windup
-    def ternarize(self):
-        r = self.howcharged()
-        if r == 1:
-            return 1
-        if r == 0:
-            return -1
-        return 0
