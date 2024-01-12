@@ -43,9 +43,11 @@ def toseg(string): #converts string to binary 7seg array
 
 class countdown:
     def __init__(self, t):
+        self.reset(t)
+    def reset(self, t):
         self.start = time.monotonic_ns()
         self.finish = self.start + t * 1000000000
-    def display(self):
+    def display(self): #used to display time as a number in mm:ss:ms
         times = (self.finish - time.monotonic_ns())//10000000
         ms = times%100 #actually centiseconds but who cares
         times = int(times/100)
@@ -59,13 +61,15 @@ class countdown:
             tint += secs*100
             tint += ms
         return tint
-    def buzzbend(self, SN, EN):
+    def buzzbend(self, sn, en): #used for buzzers
         ET = self.finish - self.start
         NT = time.time() - self.start
         X = ET / NT
-        D = EN / SN
+        D = en / sn
         C = D / X
-        return SN + C
+        return sn + C
+    def percent(self): #used to display time as a float between 0 and 1
+        return (self.finish - time.monotonic_ns()) / (self.finish - self.start)
     def expirechk(self):
         return time.monotonic_ns() > self.finish
 
@@ -109,7 +113,9 @@ class numpad:
             a.direction = digitalio.Direction.INPUT
             a.pull = digitalio.Pull.DOWN
             self.cols.append(a)
-    def check(self):
+        self.last = self.update()
+        self.sequence = []
+    def update(self):
         out = []
         for r in self.rows:
             r.value = True
@@ -119,15 +125,35 @@ class numpad:
             r.value = False
             out.append(rval)
         return out
-    def checklet(self):
-        out = ''
-        for ir in range(len(self.rows)):
-            self.rows[ir].value = True
-            for ic in range(len(self.cols)):
-                if self.cols[ic].value:
-                    out += padnums[ir][ic]
-            self.rows[ir].value = False
+    def checkheld(self):
+        held = self.update()
+        out = []
+        for i in range(len(held)):
+            for j in range(len(held[i])):
+                if held[i][j]:
+                    out.append(j+(i*len(self.cols))+1)
+        self.last = held
         return out
+    def checkpressed(self):
+        # only include values that have just changed to true
+        now = self.update()
+        then = self.last
+        out = []
+        for i in range(len(now)):
+            for j in range(len(now[i])):
+                if now[i][j] and not then[i][j]:
+                    out.append(j+(i*len(self.cols))+1)
+        self.last = now
+        return out
+    def checksequence(self):
+        p = self.checkpressed()
+        if p:
+            self.sequence.append(p[0])
+        return self.sequence
+    def clearsequence(self):
+        self.sequence = []
+    def anypressed(self):
+        return len(self.checkpressed()) != 0
 
 class button:
     def __init__(self, pin):
