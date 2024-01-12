@@ -41,7 +41,7 @@ confirmed = 0 # number we are displaying, if confirmed
 while True:
     s = pad.checksequence()
     if s:
-        if s != [10] and s != [12]:
+        if s not in [[10],[12]]:
             a,b = toint(s)
             render(a)
             if b:

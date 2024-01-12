@@ -71,7 +71,7 @@ class BCDRaw(max7219.MAX7219):
         self.clear()
 
     def set_num(self, n, *, base=10, pos=7) -> None:
-        for i in range(get_magnitude(n, base)):
+        for i in range(max(get_magnitude(n, base), 1)):
             if pos-i >= 0:
                 self.set_dig(_HEX_CODES[n % base], pos-i)
             n //= base
