@@ -6,8 +6,8 @@ Programs will be chosen based on the button pressed on the keypad.
 1: Dodge game
 2: Character debugger
 3: Coin toss Rhythm game
-4: MP3 Player (not yet implemented)
-5: EPIC Player
+4: Soundboard
+5: ?
 6: Clock (not yet implemented)
 7: Billboard (not yet implemented)
 8: "Timer" (sounds very much like a bomb) (partial code available)
