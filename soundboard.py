@@ -31,10 +31,17 @@ while True:
     else:
         continue
     if key <= 3:
-        decoder.file = open(mp3files[key-1], "rb")
-        audio.play(decoder)
-        print("playing", mp3files[key-1])
-        play = True
+        try:
+            decoder.file.close()
+            audio.stop()
+            decoder.file = open(mp3files[key-1], "rb")
+            audio.play(decoder)
+            print("playing", mp3files[key-1])
+            play = True
+        except OSError:
+            print("Slow down idiot")
+            decoder.file.close()
+            audio.stop()
     if key == 4: #pause/resume
         if play:
             audio.pause()

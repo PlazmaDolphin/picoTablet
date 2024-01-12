@@ -20,3 +20,4 @@ Programs will be chosen based on the button pressed on the keypad.
 Requirements:
 1. Figure out a way to dispatch to programs without using hardware twice
 2. Have settings that transfer between programs
+3. Make every program have some way to exit back to the main menu
