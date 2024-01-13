@@ -3,6 +3,7 @@ import board
 import time
 import core
 import dodge
+#pylint: disable=import-error
 import bcdraw
 import busio
 # set up a 3x4 keypad
@@ -67,11 +68,33 @@ def endanim(score):
     time.sleep(4)
     screen.clear()
     time.sleep(1)
+def checkquit():
+    while True:
+        seq = pad.checksequence()
+        if seq:
+            if seq[0] == 12:
+                screen.set_string("  QUIT? ")
+                screen.show()
+                if len(seq) > 1:
+                    if seq[1] ==12:
+                        #quit!
+                        screen.clear()
+                        screen.show()
+                        pad.kill()
+                        spi.deinit()
+                        cs.deinit()
+                        raise SystemExit
+                    else:
+                        pad.clearsequence()
+                        screen.set_string('  START ', pos=0)
+                        screen.show()
+            else:
+                break #resume game
+    pad.clearsequence()
 def main():
     screen.set_string(' START')
     screen.show()
-    while not pad.anypressed():
-        pass
+    checkquit()
     while True:
         domove()
         if tick.expirechk():

@@ -1,6 +1,5 @@
 import digitalio
 import pwmio
-import board
 import time
 notes = {'C': 262, 'C#': 277, 'D': 294, 'D#': 311,
     'E': 330, 'F': 349, 'F#': 370, 'G': 392,
@@ -154,6 +153,11 @@ class numpad:
         self.sequence = []
     def anypressed(self):
         return len(self.checkpressed()) != 0
+    def kill(self):
+        for r in self.rows:
+            r.deinit()
+        for c in self.cols:
+            c.deinit()
 
 class button:
     def __init__(self, pin):

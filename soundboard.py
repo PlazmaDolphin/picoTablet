@@ -17,6 +17,7 @@ mp3files = ["/sd/bone.mp3", "/sd/boom.mp3", "/sd/awp.mp3"]
 
 # You have to specify some mp3 file when creating the decoder
 mp3 = open(mp3files[0], "rb")
+#pylint: disable=no-value-for-parameter
 decoder = MP3Decoder(mp3)
 audio = AudioOut(board.GP28)
 play = False
