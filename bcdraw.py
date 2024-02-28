@@ -93,6 +93,7 @@ class BCDRaw(max7219.MAX7219):
         :param str s: string of characters to display
         """
         for i,c in enumerate(s):
+            if i+pos >= self._ndigits: break
             try:
                 self.set_dig(_CHAR_MAP[c], i+pos)
             except KeyError:

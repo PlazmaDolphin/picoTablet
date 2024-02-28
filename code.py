@@ -20,6 +20,7 @@ screen.show()
 
 def execute(action):
     # free hardware for new program
+    #pylint: disable=global-statement
     global pad, spi, cs
     pad.kill()
     screen.clear()
